@@ -1,0 +1,48 @@
+//6-1
+//구현 외부노출
+public class Point {
+    public double x;
+    public double y;
+}
+
+//6-2
+//구현 숨김
+public interface Point {
+    double getX();
+    double getY();
+
+    void setCartesian(double x, double y);
+    
+    double getR();
+    double getTheta();
+
+    void setPolar(double r, double theta);
+}
+
+//6-3
+//자동차 연료 상태를 구체적인 숫자 값으로 알려줌
+//두 함수가 변수값을 읽어 반환할 뿐이라는 사실이 확실
+public interface Vehicle {
+    double getFuelTankCapacityInGallons();
+    double getGallonsOfGasoline();
+}
+
+//6-4
+//자동차 연료 상태를 백분율이라는 추상적인 개념으로 알려줌
+//정보가 어디서 오는지 전혀 드러나지않음
+public interface Vehicle {
+    double getPercentFuelRemaining();
+}
+
+
+/*
+ * 자료를 세세하게 공개하기보다는 추상적인 개념으로 표현하는 것이 더 좋음
+ * 인터페이스나 조회(get)/설정(set) 함수만으로는 추상화가 이루어지지 않음
+ * 객체가 포함하는 자료를 표현할 가장 좋은 방법을 심각하게 고민해야함
+ * 아무 생각 없이 조회(get)/설정(set) 함수를 추가하는 방법이 가장 나쁨
+
+
+   //왜 자료값도....그렇게 추상적이어야하는지?
+   이해가 잘안감
+ */
+
