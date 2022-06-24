@@ -1,0 +1,43 @@
+// 디미터 법칙 : 잘 알려진 휴리스틱으로 모듈은 자신이 조작하는 객체의 속사정을 몰라야 한다는 법칙.
+// ex 
+// 클래스 C 의 메서드 f는 다음과 같은 메서드만 호출해야한다.
+// - 클래스 C
+// - f 가 생성한 객체
+// - f 인수로 넘어온 객체
+// - C 인스턴스 변수에 저장된 객체
+
+
+1) 기차 충돌
+
+// 잘못된 예시
+// getOptions() 함수가 반환하는 객체의 getScratchDir() 함수를 호출한 후 getScratchDir() 함수가 반환하는 객체의 getAbsolutePath() 함수를 호출하는 구조
+final String outputDir =  ctxt.getOptions().getScratchDir().getAbsolutePath();
+
+// 위 코드는 다음과 같이 나누는 편이 좋다.
+Options otps = ctxt.getOptions();
+File scratchDir = opts.getScratchDir();
+final String outputDir = scratchDir.getAbsolutePath();
+
+// 만일 객체라면 내부구조를 숨겨야 하므로 위의 코드도 디미터 법칙을 위반한다.
+// 반면 자료구조라면 당연히 내부 구조를 노출하므로 디미터 법칙이 적용되지 않는다.
+// 자료구조라면 조회함수를 사용하지않고 다음과 같이 짜야한다.
+
+final String outputDir = ctxt.options.scratchDir.getAbsolutePath;
+
+
+2) 잡종구조
+// 위와 같은 혼란으로 말미암아 절반은 객체, 절반은 자료구조인 잡종 구조가 나온다.
+// 잡종구조는 새로운 함수는 물론이고 새로운 자료 구조도 추가하기 어렵다.
+
+3) 구조체 감추기
+// 만약 ctxt, optoins, scratchDir 가 객체라면 앞서 코드 예제처럼 줄줄이 사탕으로 엮어서는 안된다.
+
+ctxt.getAbsolutePathOfScratchDirectoryOption(); -> ctxt 객체에 공개해야 하는 메서드가 너무 많아진다.
+ctxt.getScratchDirectoryOption().getAbsolutePath(); -> getScratchDirectoryOption()이 객체가 아니라 자료 구조를 반환한다고 가정하므로 이것두 별로랜다.
+
+
+// ctxt 객체에 임시파일을 생성할 때
+BufferedOutputStrean bos = ctxt.createScratchFileStream(classFileName); -> ctxt는 내부 구조를 드러내지 ㅇ낳으며 모듈에서 해당 함수는 자신이 몰라야 하는 여러 객체를 탐색할 필요가 없다.!
+
+
+
