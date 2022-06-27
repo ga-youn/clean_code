@@ -1,0 +1,44 @@
+//자료 구조체의 전형적인 형태는 공개변수만 있고 함수가 없는 클래스 -> 자료전달객체(DTO) 라고 부르기도함
+
+//좀더 일반적인 형태로는 bean 구조이다. 
+//빈은 private 변수는 get/set 함수로 조작한다.
+
+//6-7 address.java
+public calss Address {
+    private String street;
+    private String streetExtra;
+    private String city;
+    private String state;
+    private String zip;
+
+    public Address(String street, String streetExtra, String city, String state, String zip){
+
+        this.street = street;
+        this.streetExtra = streetExtra;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getSteetExtra() {
+        return streetExtra;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+}
+
+//
