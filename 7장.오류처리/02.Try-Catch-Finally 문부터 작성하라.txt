@@ -1,0 +1,40 @@
+//try 블록은 트랜잭션과 비슷하다.
+
+//파일이 없으면 예외를 던지는지 알아보는 단위 테스트
+@Test(expected = StorageException.class)
+public void retrieveSectionShouldThrowOnInvalidFileName() {
+    sectionStore.retrieveSection("invalid - file");
+}
+
+//단위테스트에 맞춰 다음코드를 구현
+//그런데 코드가 예외를 던지지 않으므로 단위테스트는 실패.
+public List<RecordedGrip> retrieveSection(String sectionName) {
+    //실제로 구현할 때까지 비어 있는 더미를 반환한다.
+    return new ArrayList<RecordedGrip>();
+}
+
+//잘못된 파일 접근을 시도하게 구현을 변경
+public List<RecordedGrip> retrieveSection(String sectionName) {
+    try {
+        FileInfutStream stream = new FileInputStream(sectionName)
+    } catch (Exception e){
+        throw new StorageException("retrieval error", e);
+    }
+    return new ArrayList<RecordedGrip>();
+}
+
+//코드가 예외를 던지므로 테스트 성공
+//이 시점에서 리팩터링이 가능하다.
+//catch 블록에서 예외 유형을 좁혀 실제로 FileInfutStream 생성자가 던지는 fileNotFoundException을 잡아낸다.
+public List<RecordedGrip> retrieveSection(String sectionName) {
+    try {
+        FileInfutStream stream = new FileInputStream(sectionName);
+        stream.close();
+    } catch (FileNotFoundException e){
+        throw new StorageException("retrieval error", e);
+    }
+    return new ArrayList<RecordedGrip>();
+}
+
+
+
