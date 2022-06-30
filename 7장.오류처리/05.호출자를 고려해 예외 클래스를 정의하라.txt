@@ -1,0 +1,68 @@
+//오류를 형편없이 분류한 사례
+//외부 라이브러리를 호출하는 try-catch-finally 문을 포함한 코드로
+//외부 라이브러리가 던질 예외를 모두 잡아낸다.
+
+ACMEPort port = new ACMEPort(12);
+
+try {
+    port.open();
+} catch (DeviceResponseException e) {
+    reportPortError(e);
+    logger.log("Device response Exception", e);
+} catch (ATM1212UnlockedException e) {
+    reportPortError(e);
+    logger.log("Unlock Exception", e);
+} catch (GMXError e) {
+    reportPortError(e);
+    logger.log(Device response Exception);
+} finally {
+    ...
+}
+
+// 대다수 상황에서 오류를 처리하는 방식은
+// 오류를 일으킨 원인과 무관하게 비교적 일정하다.
+// 1) 오류를 기록한다.
+// 2) 프로그램을 계속 수행해도 좋은지 확인한다.
+
+// 위의 코드는 예외에 대응하는 방식이 예외 유형과 무관하게 거의 동일
+// 그래서 코드를 간결하게 고치기가 아주 쉬움
+// 호출하는 라이브러리 api를 감싸면서 예외 유형 하나를 반환
+
+LocalPort port = new LocalPort(12);
+try {
+    port.open();
+} catch (PortDeviceFailure e){
+    reportError(e);
+    logger.log(e.getMessage(), e);
+} finally {
+    ...
+}
+
+// 여기서 LocalPort 클래스는 단순히 ACMEPort 클래스가 던지는 예외를 잡아 변환하는 감싸기 클래스일 뿐이다.
+
+public class LocalPort {
+    private ACMEPort innerPort;
+
+    public LocalPort(int portNumber) {
+        innerPort = new ACMEPort(portNumber);
+    }
+}
+
+public void open() {
+    try {
+        innerPort.open();
+    } catch (DeviceResponseException e) {
+        throw new PortDeviceFailure(e);
+    } catch (ATM1212UnlockedException e) {
+        throw PortDeviceFailure(e);
+    } catch (GMXError e) {
+        throw new PortDeviceFailure(e);
+    }
+    ...
+}
+
+// 감싸기 클래스의 장점
+// 외부 api를 감싸면 외부 라이브러리와 프로그램 사이에서 의존성이 크게 줄어든다.
+// 나중에 다른 라이브러리로 갈아타도 비용이 적다ㅏ.
+// 또한 감싸기 클래스에서 외부 api를 호출하는 대신 테스트 코드를 넣어주는 방법으로 프로그램을 테스트하기도 쉬워진다.
+// 특정 업체가 api를 설계한 방식에 발목 잡히지 않는다.
