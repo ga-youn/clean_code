@@ -1,0 +1,26 @@
+//다음은 비용 청구 애플리케이션에서 총계를 계산하는 허술한 코드
+
+try { 
+    MealExpenses expenses = expenseReportDAO.getMeals(emplyee.getId());
+    m_total += expenses.getTotal();
+} catch(MealExpensesNotFound e){
+    m_total += getMealPerDiem();
+}
+
+//특수한 상황을 처리할 필요가 없다면?
+MealExpenses expenses = expenseReportDAO.getMeals(emplyee.getId());
+m_total += expenses.getTotal();
+//이 코드가 가능할까?
+ExpenseReportDAO를 고쳐 언제나 MealExpense 객체를 반환한다.
+청구한 식비가 없다면 일일 기본 식비를 반환하는 MealExpense 객체를 반환한다.
+
+public class PerDiemMealExpenses implements MealExpense {
+    public int getTotal{
+        //기본값으로 일일 기본 식비를 반환한다.
+    }
+}
+
+
+// 이를 특수사례패턴이라고 부른다.
+클래스를 만들거나 객체를 조작해 특수 사례를 처리하는 방식이다.
+그러면 클라이언트 코드가 예외적인 상황을 처리할 필요가 없어진다.
