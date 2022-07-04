@@ -1,0 +1,39 @@
+//
+public void registerItem(Item item){
+    if(item != null){
+        ItemRegistry registry = peristentStore.getItemRegistry();
+        if(registry != null){
+            Item existing = registry.getItem(item.getID());
+            if(existing.getBillingPreiod().hasRetailOwner()){
+                existing.register(item);
+            }
+        }
+    }
+}
+
+//null을 반환하는 코드는 일거리를 늘릴뿐만 아니라 호출자에게 문제를 떠넘긴다.
+//메서드에서 null을 반환하고프다면 그 대신 예외를 던지거나 특수사례객체를 바호나한다.
+//사용하려는 외부 api가 null을 반환한다면 감싸기 메서드를 구현해 예외를 더닞거나 특수 사례 객체를 반환하는 방식을 고려한다.
+
+List<Employee> employees = getEmployees();
+if (employees != null) {
+    for(Employee e : employees){
+        totalPay += e.getPay();
+    }
+}
+
+//위에서 getEmployees는 null도 반환한다.
+//하지만 반드시 null을 반환할 필요가 있을까?
+//getEmployees를 변경해 빈 리스트를 반환한다면 코드가 훨씬 깔끔해진다.
+List<Employee> employees = getEmployees();
+for(Employee e : employees){
+    totalPay += e.getPay();
+}
+
+//자바에는 Colloections.emptyList()가 있어 미리 정의된 읽기 전용 리스트를 반환한다.
+public List<Employee> getEmployees() {
+    if(..직원이 없다면..)
+    return Colloections.emptyList();
+}
+
+//코드도 깔끔해질 뿐더러 NullPointerException이 발생할 가능성도 줄어든다.
