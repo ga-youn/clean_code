@@ -1,0 +1,46 @@
+정상적인 인수로 null을 기대하는 API가 아니라면 메서드로 null을 전달하는 코드는 최대한 피한다.
+
+//두 지점 사이의 거리를 계산하는 간단한 메서드
+public class MetricsCalculator
+{
+    public double xProjection(Point p1, Point p2){
+        return (p2.x - p1.x) * 1.5;
+    }
+    ...
+}
+
+//누군가 인수로 null을 전달한다면?
+
+calculator.xProjection(null, new Point(12,13)); 
+
+//NullPointerException발생
+//->새로운 예외 유형을 만들어 던지는 방법으로 해결
+public class MetricsCalculator
+{
+    public double xProjection(Point p1, Point p2){
+        if(p1 == null || p2 == null){
+            throw InvalidArgumentException(
+                "Invalid argument for MetricsCalculator.xProjection");
+            )
+        }
+        return (p2.x - p1.x) * 1.5;
+    }
+}
+
+//하지만 InvalidArgumentException 예외를 처리기가 필요
+//->assert 문을 사용하는 방법
+public class MetricsCalculator
+{
+    public double xProjection(Point p1, Point p2){
+        assert p1 != null : "p1 should not be null";
+        assert p2 != null : "p2 should not be null";
+        return (p2.x - p1.x) * 1.5;
+    }
+}
+
+/*
+결론
+대다수 프로그래밍 언어는 호출자가 실수로 넘기는 null을 적절히 처리하는 방법이 없다.
+애초에 null을 넘기지 못하도록 금지하는 정책이 가장 합리적
+*/
+
