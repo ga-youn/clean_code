@@ -1,0 +1,32 @@
+ex) java.util.getMealPerDiem
+
+//Sensor라는 객체를 담는 Map
+Map sensors = new HashMap();
+Sensor s = (Sensor)sensors.get(sensorId);
+
+Map이 반환하는 오브젝트를 올바른 유형으로 변환할 책임은 Map을 사용하는 클라이언트에게 있음.
+위와 같은 코드는 의도도 분명히 드러나지 않는다.
+대신 다음과 같이 제네릭스를 사용하면 코드 가독성이 크게 높아진다.
+
+Map<String, Sensor> sensors = new HashMap<Sensor>();
+...
+Sensor s = sensors.get(sensorId);
+
+하지만 위 방법도 Map<String, Sensor>가 사용자에게 필요하지 않는 기능까지 제공하는 문제를 해결하지 못함.
+프로그램에서 Map<String, Sensor> 인스턴스를 여기저기로 넘긴다면, Map 인터페이스가 변할 경우, 수정할 코드가 상당히 많아진다.
+
+
+//깔끔한 코드
+public class Sensors {
+    private Map sensors = new HashMap();
+
+    public Sensor getById(String id){
+        return (Sensor) sensors.get(id);
+    }
+
+    //이하생략
+}
+
+경계 인터페이스인 Map을 Sensors안으로 숨긴다. 따라서 Map 인터페이스가 변하더라도 나머지 프로그램에는 영향을 미치지 않는다.
+Map과 같은 경계 인터페이스를 이용할 때는 이를 이요하는 클래스나 클래스 계열 밖으로 노출되지 않도록 주의한다.
+Map 인스턴스를 공개 API의 인수로 넘기거나 반환값으로 사용하지 않는다.
