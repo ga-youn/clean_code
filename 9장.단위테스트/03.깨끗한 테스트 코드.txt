@@ -1,0 +1,27 @@
+깨끗한 테스트 코드에서 제일 중요한 것은 가독성!
+
+
+//9-1 SerializedPageResponderTest.java
+
+public void testGetPageHieratchyAsXml() throws Exception
+{
+    crawler.addPage(root, PathParser.parse("PageOne"));
+
+}
+
+
+addPage와 assertSubString을 부르느라 중복되는 코드가 매우많다.
+자질구레한 사항이 너무 많아 테스트 코드의 표현력이 떨어지는 경우임
+
+//9-2 SerializedPageResponderTest.java(리팩터링한 코드)
+
+잡다하고 세세한 코드를 거의 다 없애야한다.
+테스트 코드는 본론에 돌입해 진짜 필요한 자료 유형과 함수만 사용한다.
+
+//9-3 EnvironmentControllerTest.java
+@Test
+public void turnOnLoTempAlarmAtthreashold() throws Exception {
+    hw.setTemp(WAY_TOO_COLE);
+    controller.tic();
+    
+}
