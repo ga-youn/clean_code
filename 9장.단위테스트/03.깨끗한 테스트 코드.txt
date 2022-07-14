@@ -6,6 +6,10 @@
 public void testGetPageHieratchyAsXml() throws Exception
 {
     crawler.addPage(root, PathParser.parse("PageOne"));
+    crawler.addPage(root, PathParser.parse("PageOne.ChildOne"));
+    crawler.addPage(root, PathParser.parse("PageTwo"));
+
+    //작성중
 
 }
 
@@ -13,15 +17,107 @@ public void testGetPageHieratchyAsXml() throws Exception
 addPage와 assertSubString을 부르느라 중복되는 코드가 매우많다.
 자질구레한 사항이 너무 많아 테스트 코드의 표현력이 떨어지는 경우임
 
-//9-2 SerializedPageResponderTest.java(리팩터링한 코드)
+//9-2 SerializedPageResponderTest.java(리팩터링한 코드) -> 도메인에 특화퇸 테스트 언어 DSL로 테스트 코드를 구현
+public void testGetPageHierarchyAsXml() throws Exception {
+    makePages("PageOne", "PageOne.ChildOne", "PageTwo");
+
+    submitRequest("root", "type:pages");
+
+    assertResponseIsXML();
+    assertResponseContains(
+        "<name>PageOne</name>, "<name>PageTwo</name>", "<name>ChileOne</name>"
+    );
+}
+
+public void testSymbolicLinksAreNotInXmlPageHierarchy() throws Exception {
+    WikiPage page = makePage("PageOne");
+    makePages("PageOne.ChildOne", "PageTwo");
+
+    addLinkTo(page, "PageTwo", "SymPage");
+
+    submitRequest("root", "type:pages");
+
+    assertResponseIsXML();
+    assertResponseContains(
+        "<name>PageOne</name>, "<name>PageTwo</name>", "<name>ChileOne</name>"
+    );
+
+    assertResponseDoesNotContain("SymPage");
+}
+
+public void testGetDataAsXml()  throw Exception {
+    makePageWithContent("TestPageOne", "test page");
+
+    submitRequest("TestPageOne", "type:date");
+
+    assertResponseIsXML();
+    assertResponseContains("test page", "<Test")'
+}
 
 잡다하고 세세한 코드를 거의 다 없애야한다.
 테스트 코드는 본론에 돌입해 진짜 필요한 자료 유형과 함수만 사용한다.
 
-//9-3 EnvironmentControllerTest.java
+
+
+
+
+
+//
+//9-3 EnvironmentControllerTest.java -> 환경제어 시스템 속 테스트 코드 
 @Test
 public void turnOnLoTempAlarmAtthreashold() throws Exception {
     hw.setTemp(WAY_TOO_COLE);
     controller.tic();
-    
+    assertTrue(hw.heaterState());
+    assertTrue(hw.blowerState());
+    assertFalse(hw.coolerState());
+    assertFalse(hw.hiTempAlarmState());
+    assertTrue(hw.loTempAlarmState());
 }
+
+-> 읽기 불편함, 가독성 좋게 리팩터링
+//9-4 EnvironmentControllerTest.java(리팩터링)
+@Test
+public void turnOnLoTempAlarmAtthreashold() throws Exception {
+   wayTooCold(); //tic 함수를 숨김
+   assertEquals("HBchL", hw.getState());
+}
+
+//대문자 = 켜짐, 소문자 = 꺼짐 hbchl -> heater,blower,cooler,hi-temp-alarm,lo-temp,alarm 순
+//9-5 EnvironmentControllerTest.java(더 복잡한 선택)
+@Test
+public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
+    tooHot();
+    assertEquals("hBChl", hw.getState());
+}
+
+public void turnOnHeaterAndBlowerIfTooCold() throws Exception {
+    tooHot();
+    assertEquals("HBchl", hw.getState());
+}
+
+public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
+    tooHot();
+    assertEquals("hBChl", hw.getState());
+}
+
+public void turnOnCoolerAndBlowerIfTooHot() throws Exception {
+    tooHot();
+    assertEquals("hBChl", hw.getState());
+}
+
+
+//9-6 MockControlHardWare.java
+public String getState() {
+    String state = "";
+    state += heater ? "H" : "h";
+    state += blower ? "B" : "b";
+    state += cooler ? "C" : "c";
+    state += hiTempAlarm ? "H" : "h";
+    state += loTempAlarm ? "L" : "l";
+
+    return state;
+}
+효율을 높이려면 StringBuffer가 적합하나
+StringBuffer는 보기에는 흉하다. 실제 코드에서 크게 무리가 아니라면 피한다.
+대개 메모리나 CPU 효율과 관련있는 경우라 코드의 깨끗함과는 거리가 멀다.

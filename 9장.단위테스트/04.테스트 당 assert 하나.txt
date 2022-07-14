@@ -1,0 +1,22 @@
+JUnit으로 테스트 코드를 짤 때는 함수마다 assert 문을 단 하나만 사용해야 한다.
+assert문이 단 하나인 함수는 결론이 하나라서 코드를 이해하기 쉽고 빠르다.
+
+//9-7 SerializedPageResponderTest.java(단일 assert)
+public void testGetPageHierarchyAsXml() throws Exception {
+    givenPages("PageOne", "PageOne.ChildOne", "PageTwo");
+
+    whenRequestIsIssued("root", "type:pages");
+
+    thenResponseShouldBeXML();
+}
+
+public void testGetPageHierarchyHasRightTags() throws Exception {
+    givenPages("PageOne", "PageOne.ChildOne", "PageTwo");
+
+    whenRequestIsIssued("root", "type:pages");
+
+    thenResponseShouldContain(
+        "<name>PageOne</name>, "<name>PageTwo</name>", "<name>ChileOne</name>"
+    );
+}
+
