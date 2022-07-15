@@ -9,7 +9,8 @@ public void testGetPageHieratchyAsXml() throws Exception
     crawler.addPage(root, PathParser.parse("PageOne.ChildOne"));
     crawler.addPage(root, PathParser.parse("PageTwo"));
 
-    //작성중
+    //
+    ~~~~~~~~~~~~~~~
 
 }
 
