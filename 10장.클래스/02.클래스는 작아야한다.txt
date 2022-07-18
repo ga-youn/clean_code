@@ -11,4 +11,41 @@ public class SublerDashboard extends JFrame implements MetaDataUser{
 
 클래스 이름은 해당 클래스 책임을 기술해야한다.
 
+1) 단일책임원칙
 단일책임원칙은 클래스나 모듈을 변경할 이유가 단 하나뿐이어야 한다는 원칙이다.(책임이 하나)
+
+2) 응집도
+클래스는 인스턴스 변수 수가 작아야한다.
+
+
+//10-4 Stack.java 응집도가 높은 클래스 
+public class Stack {
+    private int topOfStack = 0;
+    List<Integer> elements = new LinkedList<Integer>();
+
+    public int size(){
+        return topOfStack;
+    }
+
+    public void push(int element){
+        topOfStack++;
+        elements.add(element);
+    }
+
+    public int pop() throws PoppenWhenEmpty {
+        if(topOfStack == 0) throws enw PoppenWhenEmpty();
+        int element = elements.get(--topOfStack);
+        elements.remove(topOfStack);
+        return element;
+    }
+}
+
+함수는 작게, 메개변수 목록을 짧게 라는 전략을 따르다 보면 때때로 몇몇 매서드만이 사용하는 인스턴수 변수가 아주 많아진다.
+이는 새로운 클래스로 쪼개야 한다는 신호다.
+응집도가 높아지도록 변수와 메서드를 적절히 분리해 새로운 클래스 두세개로 쪼개준다.
+
+3)응집도를 유지하면 작은 클래스 여럿이 나온다.
+클래스가 응집력을 잃는다면 쪼개라!
+큰 함수를 작은 함수 여럿으로 쪼개다 보면 종종 작은 클래스 여럿으로 쪼갤 기회가 생긴다.
+그러면서 프로그램에 점점 더 체계가 잡히고 구조가 투명해진다.
+
