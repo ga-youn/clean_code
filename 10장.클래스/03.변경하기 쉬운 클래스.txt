@@ -1,0 +1,29 @@
+개끗한 시스템은 클래스를 체계적으로 정리해 변경에 수반하는 위험을 낮춤.
+
+//10-9 -> 주어진 메타 자료로 적절한 SQL 문자열을 만드는 SQL 클래스, 아직 미완성이라 UPDATE문과 같은 일부 SQL 기능 지원X
+//변경이 필요해 수정해야하는 클래스 -> 어떤 변경이든 클래스에 손대면 다른 코드를 망가뜨릴 잠정적인 위험이 존재
+
+public class Sql {
+    public Sql(String table, Column[] columns)
+    public String create()
+    public String insert(Object[] fields)
+    public String selectAll()
+    public String findByKey(String keyColumm, String keyValue)
+    public String select(Column column, String pattern)
+    public String select(Criteria criteria)
+    public String preparedInsert()
+    private String columnList(Column[] columns)
+    private String valuesList(Object[] fields, final Column[] columns)
+    private String selectWithCriteria(String criteria)
+    private String placeholderList(Column[] columns)
+}
+
+ex) select 문에 내장된 select문을 지원하려면 sql 클래스를 고쳐야함. -> srp 위반
+
+//10-10 닫힌 클래스 집합
+//공개 인터페이스를 각각 sql 클래스에서 파생하는 클래스로 만듬
+//valueList와 같은 비공개 메서드는 해당하는 파생 클래스로 옮김
+//모든 파생 클래스가 공통으로 사용하는 비공개 메서드는 Where와 ColumnList라는 두 유틸리티 클래스에 넣음
+//update문을 추가할 때 기존 클래스를 변경할 필요가 전혀 없다는 사실 역시 중요.
+//update문을 만드는 논리는 sql 클래스에서 새 클래서 updqteSql을 상속받아 넣으면 그만이다.
+
